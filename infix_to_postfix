@@ -1,0 +1,66 @@
+#include <iostream>
+#include <stack>
+using namespace std;
+
+bool operand(char c){
+    return (c >= 'a' && c <= 'z');
+}
+
+int order(char c){
+    switch(c){
+        case '+':
+        case '-':
+            return 1;
+        case '*':
+        case '/':
+            return 2;
+        case '^':
+            return 3;
+    }
+    return -1;
+}
+
+int main() {
+    /* Enter your code here. Read input from STDIN. Print output to STDOUT */
+    int t;
+    cin>>t;
+    while(t--){
+        string infix, postfix="";
+        cin>>infix;
+        stack <char> s;
+        
+        for(int i=0; i<infix.length(); i++){
+            char c = infix[i];
+        
+            if (operand(c)) postfix += c;
+        
+            else if (c == '(')  s.push(c);
+        
+            else if (c == ')'){
+                while (s.top() != '('){
+                    postfix += s.top();
+                    s.pop();
+                }
+                s.pop();
+            }
+        
+            else{
+                if (s.empty())  s.push(c);
+                else if (order(c) >= order(s.top()))    s.push(c);
+                else{
+                    while (order(c) < order(s.top())){
+                        postfix += s.top();
+                        s.pop();
+                    }
+                    s.pop();
+                }
+            }
+        }
+        while (!s.empty()){
+            postfix += s.top();
+            s.pop();
+        }
+        cout<<postfix<<"\n";
+    }
+    return 0;
+}
